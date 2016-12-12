@@ -34,11 +34,11 @@
         top: 0;
         bottom: 0;
         left: -200px;
+        z-index: 99;
         width: 200px;
-        background-color: #312b2b;
         color: #313131;
         transition: all .3s ease;
-        z-index: 99;
+        background-color: #2b2b2b;
     }
     .nav-list .iconfont:before {
         color: #42b983;
@@ -48,9 +48,9 @@
         transform: translateX(200px);
     }
     .list-ul {
+        overflow: hidden;
         margin: 0 24px;
         border-top: 1px solid #584848;
-        overflow: hidden;
     }
     .list-ul li {
         padding: 9% 0;

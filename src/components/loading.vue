@@ -1,69 +1,78 @@
 <template>
-    <div v-show="show" id="wxloading" class="wx_loading">
-        <div class="wx_loading_inner">
-            <i class="wx_loading_icon"></i>{{showTxt}}...
-        </div>
-    </div>
+	<div class="loading" v-show="showLoading">
+		<div class="ball-wrap">
+			<div class="ball"></div>
+			<span class="text">loading...</span>
+		</div>
+	</div>
 </template>
+
 <script>
-    export default {
-        replace: true,
-        props: ['showTxt',"show"]
-    }
+	export default {
+		props: ['showLoading']
+	}
 </script>
-<style>
-    .wx_loading {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        z-index: 9999;
-        background-color: rgba(0, 0, 0, 0);   
-    }
-    .wx_loading .wx_loading_inner {
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #ffffff;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin-left: -70px;
-        margin-top: -48px;
-        width: 150px;
-        border-radius: 6px;
-        font-size: 14px;
-        padding: 58px 0 10px 0;    
-    }
-    .wx_loading .wx_loading_inner .wx_loading_icon {
-        position: absolute;
-        top: 15px;
-        left: 50%;
-        margin-left: -16px;
-        width: 24px;
-        height: 24px;
-        border: 2px solid #fff;
-        border-radius: 24px;
-        -webkit-animation: gif 1s infinite linear;
-        animation: gif 1s infinite linear;
-        clip: rect(0 auto 12px 0);
-    }
-    @keyframes gif {
-        0% {
-            -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-        }
-    }
-    @-webkit-keyframes gif {
-        0% {
-            -webkit-transform: rotate(0deg);
-        }
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
-    }
+
+<style scoped>
+	.loading {
+		position: fixed;
+		left: 0;
+		top: 0;
+		z-index: 10001;
+		width: 100%;
+		height: 100%;
+		background: #fff;
+	}
+	.ball-wrap {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		margin: auto;
+		width: 100px;
+		height: 100px;
+		text-align: center;
+	}
+	.ball {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		width: 50px;
+		height: 50px;
+		margin: auto;
+		border: 4px solid #f0f0f0;
+		border-radius: 50%;
+		-webkit-animation: ball .8s linear infinite;
+		animation: ball .8s linear infinite;
+	}
+	.ball::before {
+		content: '';
+		position: absolute;
+		right: -1px;
+		top: -1px;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #ffd100;
+	}
+	.text {
+		position: absolute;
+		top: 83px;
+		color: #979797;
+		-webkit-transform: translate(-50%);
+		transform: translate(-50%);
+	}
+	@keyframes ball {
+		0% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg);
+		}
+		100% {
+			-webkit-transform: rotate(360deg);
+			transform: rotate(360deg);
+		}
+	}
 </style>

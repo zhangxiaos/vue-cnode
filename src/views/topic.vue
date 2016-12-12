@@ -37,13 +37,12 @@
                             <span class="cl">
                                 <span class="name">{{ item.author.loginname }}</span>
                                 <span class="name mt10">
-                                    发布于:{{ item.create_at | getLastTimeStr true }}</span>
+                                    发布于：{{ item.create_at | getLastTimeStr true }}</span>
                             </span>
                             <span class="cr">
-                                <span class="iconfont icon"
-                                    @click="upReply(item)">&#xe608;</span>
+                                <span class="iconfont icon-appreciatefill" @click="upReply(item)"></span>
                                 {{ item.ups.length }}
-                                <span class="iconfont icon" @click="addReply(item.id)">&#xe609;</span>
+                                <span class="iconfont icon-commentfill" @click="addReply(item.id)"></span>
                             </span>
                         </div>
                     </section>
@@ -59,25 +58,34 @@
         </section>
         
         <nv-top></nv-top>
+
         <nv-reply v-if="userId"
                   :topic.sync="topic"
                   :topic-id="topicId"
                   :reply-id="" >
         </nv-reply>
 
+        <nv-alert :content="alert.txt" :show="alert.show"></nv-alert>
+        
+        <loading :show-loading="showLD"></loading>
     </div>
 </template>
 
 <script>
     export default {
-        data (){
-            let _self = this;
+        components:{
+            'nv-head': require('components/header'),
+            'nv-reply': require('components/reply'),
+            'nv-alert': require('components/nvAlert'),
+            'nv-top': require('components/backtotop'),
+            'loading': require('components/loading')
+        },
+        data () {
             return {
                 topic: {},           
                 topicId: '',
                 curReplyId: '',
                 userId: localStorage.userId || '',
-                /*弱提示*/
                 alert: {
                     txt: '',
                     show: false,
@@ -85,7 +93,7 @@
                         let timer;
                         clearTimeout(timer);
                         timer = setTimeout(() => {
-                            _self.alert.show = false;
+                            this.alert.show = false;
                         }, 1000);
                     }
                 }
@@ -93,66 +101,52 @@
         },
         route: {
             data (transition) {
-                let _self = this;
-                _self.topicId = transition.to.params.id;
+                this.topicId = transition.to.params.id;
 
-                $.get(`https://cnodejs.org/api/v1/topic/${_self.topicId}`, d => {
-                    if (d && d.data) {
-                        _self.topic = d.data;
-                    }
+                this.$http.get(`topic/${this.topicId}`).then(res => {
+                    this.showLD = false;
+                    this.$set('topic', res.data.data);
                 });
             }
         },
         methods:{
-            isUps (ups) {
-                let _self = this;
-                return $.inArray(_self.userId,ups) >= 0;
-            },
-            addReply (id) {
-                this.curReplyId = id;
-                let _self = this;
-                if(!_self.userId){
-                    _self.$route.router.go('/login?redirect='+encodeURIComponent(this.$route.path));
-                }
-            },
             upReply (item) {
-                let _self = this;
-                if (!_self.userId) {
-                    _self.$route.router.go('/login?redirect='+encodeURIComponent(this.$route.path));
+                if (!this.userId) {
+                    this.$route.router.go('/login?redirect='+encodeURIComponent(this.$route.path));
                 }
                 else {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'https://cnodejs.org/api/v1/reply/'+item.id+'/ups',
-                        data:{accesstoken: localStorage.token},
-                        dataType: 'json',
-                        success: res => {
-                            if (res.success) {
-                                if (res.action == "down") {
-                                    let index = $.inArray(_self.userId, item.ups);
-                                    item.ups.splice(index,1);
-                                }
-                                else{
-                                    item.ups.push(_self.userId);
-                                }
+                    this.$http.post(`reply/${item.id}/ups`, {
+                        accesstoken: localStorage.token
+                    })
+                    .then(res => {
+                        res = res.data;
+
+                        if (res.success) {
+                            if (res.action === 'down') {
+                                let index = $.inArray(this.userId, item.ups);
+                                item.ups.splice(index, 1);
                             }
-                        },
-                        error: res => {
-                            let error = JSON.parse(res.responseText);
-                            _self.alert.txt = error.error_msg;
-                            _self.alert.show = true;
-                            _self.alert.hideFn();
-                            return false;
+                            else {
+                                item.ups.push(this.userId);
+                            }
                         }
+                    })
+                    .catch(err => {
+                        this.alert.txt = err.body.error_msg;
+                        this.alert.show = true;
+                        this.alert.hideFn();
+                        return false;
                     });
                 }
+            },
+
+            addReply (id) {
+                this.curReplyId = id;
+
+                if(!this.userId){
+                    this.$route.router.go('/login?redirect='+encodeURIComponent(this.$route.path));
+                }
             }
-        },
-        components:{
-            "nv-head":require('../components/header.vue'),
-            "nv-alert":require('../components/nvAlert.vue'),
-            "nv-reply":require('../components/reply.vue'),
-            "nv-top":require('../components/backtotop.vue')
         }
     }
 </script>

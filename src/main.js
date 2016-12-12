@@ -1,18 +1,38 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueResource from 'vue-resource'
 import FastClick from 'fastclick'
 import filters from './filters'
 
 Vue.use(VueRouter)
+Vue.use(VueResource)
 
 // 实例化Vue的filter
 Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
+
+Vue.mixin({
+	http: {
+		root: 'https://cnodejs.org/api/v1'
+	},
+	data () {
+		return {
+			showLD: true
+		}
+	}
+})
+
+// Vue.http.interceptors.push((request, next) => {
+//     next((response) => {        
+//     	if (response.statusText === 'OK') {
+//     	}
+//     	return response;
+//     })
+// })
 
 let router = new VueRouter()
 
 let app = Vue.extend({})
 
-// 路由配置
 import Home from './views/index.vue'
 import List from './views/list.vue'
 import Topic from './views/topic.vue'
@@ -23,12 +43,11 @@ import Login from './views/login.vue'
 import User from './views/user.vue'
 
 router.map({
-	// 404 路由
 	'*': {
 		component: Home
 	},
 	'/': {
-		name: 'home',   //首页
+		name: 'home',
 		component: Home
 	},
 	'/list': {

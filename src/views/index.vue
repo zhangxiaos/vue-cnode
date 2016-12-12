@@ -5,23 +5,22 @@
 </template>
 
 <script>
-	// import 'assets/scss/iconfont/icnofont.css'
 	import 'assets/scss/CV.scss'
     import 'assets/scss/github-markdown.css'
 
     export default {
     	ready () {
-    		setTimeout(() =>{
-    			this.$route.router.go({name: 'list'});
+    		setTimeout(() => {
+    			this.$route.router.go({path: '/list'});
     		}, 2000);
     	}
     }
 </script>
 
 <style>
-	.home-logo{
+	.home-logo {
+        margin-top: 40%;
         width: 100%;
         background-color: #fff;
-        margin-top: 40%;
     }
 </style>

@@ -64,7 +64,6 @@ const linkUsers = function(text) {
     return text;
 };
 
-
 /**
  *   对Date的扩展，将 Date 转化为指定格式的String 
  *   月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
@@ -73,7 +72,7 @@ const linkUsers = function(text) {
  *   (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
  *   (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
  */
-const fmtDate = function(date, fmt) { //author: meizz 
+const fmtDate = function(date, fmt) {
     var o = {
         "M+": date.getMonth() + 1, //月份 
         "d+": date.getDate(), //日 
@@ -122,7 +121,6 @@ const MillisecondToDate = function(msd) {
     }
     return str;
 }
-
 
 exports.linkUsers = linkUsers;
 exports.fetchUsers = fetchUsers;

@@ -25,67 +25,59 @@
 
 <script>
     export default {
+        components: {
+            'nvHead': require('../components/header.vue'),
+            'nvAlert': require('../components/nvAlert.vue')
+        },
         data () {
-            let self = this;
             return {
                 topic: {
-                    tab:'share',
-                    title:'',
-                    content:'',
-                    accesstoken:localStorage.token
+                    tab: 'share',
+                    title: '',
+                    content: '',
+                    accesstoken: localStorage.token
                 },
-                err:'',
-                authorTxt:'<br/><br/><a class="from" href="https://github.com/shinygang/Vue-cnodejs">I‘m webapp-cnodejs-vue</a>',
+                err: '',
                 alert: {
                     txt: '',
                     show: false,
-                    hideFn:function(){
+                    hideFn: () => {
                         let timer;
                         clearTimeout(timer);
                         timer = setTimeout(function () {
-                            self.alert.show = false;
+                            this.alert.show = false;
                         }, 1000);
                     }
                 }
             }
         },
         methods: {
-            addTopic (){
-                let self = this
-                    , title = $.trim(self.topic.title)
-                    , contents = $.trim(self.topic.content);
-                if(!title || title.length < 10){
+            addTopic () {
+                let self    = this, 
+                    title   = $.trim(self.topic.title), 
+                    content = $.trim(self.topic.content);
+
+                if (!title || title.length < 10) {
                     self.err = 'title';
                     return false;
                 }
-                if(!contents){
+                if (!content) {
                     self.err = 'content';
                     return false;
                 }
-                self.topic.content = self.topic.content+self.authorTxt;
-                $.ajax({
-                    type:'POST',
-                    url:'https://cnodejs.org/api/v1/topics',
-                    data: self.topic,
-                    dataType: 'json',
-                    success:function(res){
-                        if(res.success){
-                            self.$route.router.go({name:'home'});
-                        }
-                    },
-                    error:function(res){
-                        let error = JSON.parse(res.responseText);
-                        self.alert.txt = error.error_msg;
-                        self.alert.show = true;
-                        self.alert.hideFn();
-                        return false;
+
+                this.$http.post('topics', {
+                    accesstoken: this.topic.accesstoken,
+                    title: title,
+                    tab: this.topic.tab,
+                    content: content
+                }).then(res => {
+                    if (res.success) {
+                        console.log(1); 
+                        this.$route.router.go({path: '/home'});
                     }
                 });
             }
-        },
-        components:{
-            "nvHead":require('../components/header.vue'),
-            "nvAlert":require('../components/nvAlert.vue')
         }
     }
 </script>
@@ -100,10 +92,10 @@
         border-bottom: solid 1px #d4d4d4;
     }
     .add-container .line .add-btn{
-        color: #fff;
-        background-color: #80bd01;
         padding: 5px 15px;
+        color: #fff;
         border-radius: 5px;
+        background-color: #80bd01;
     }
     .add-container .line .add-tab{
         display: inline-block;

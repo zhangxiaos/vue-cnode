@@ -1,41 +1,28 @@
 <template>
-    <header :class="['fix-header', {'show':showMenu}]" id="hd">
-        <div class="nv-toolbar">
-            <div class="toolbar-nav" @click="openMenu"></div>
-            <span>{{ pageType }}</span>
+    <div>
+        <header id="hd" :class="['fix-header', {'show':showMenu}]">
+            <div class="nv-toolbar">
+                <div class="toolbar-nav" @click="showMenu = true"></div>
+                <span>{{ pageType }}</span>
+            </div>
+        </header>
+
+        <menu-component :show-menu.sync="showMenu"></menu-component>
+
+        <div class="page-cover"
+             v-if="showMenu"
+             @click="showMenu = false">
         </div>
-    </header>
-
-    <!-- menu component -->
-    <nv-menu :show-menu.sync="showMenu"></nv-menu>
-
-    <!-- mask layer -->
-    <div class="page-cover"
-         v-if="showMenu"
-         @click="closeMenu">
     </div>
 </template>
 
 <script>
+    import menuComponent from './menu'
+
     export default {
-        props: ['pageType','showMenu'],
-        methods: {
-            openMenu () {
-                $('html').addClass("scroll-hide");
-                this.showMenu = true;
-            },
-            closeMenu () {
-                $('html').removeClass("scroll-hide");
-                this.showMenu = false;
-            }
-        },
-        // events: {
-        //     'close-menu': () => {
-        //         this.showMenu = false;
-        //     }        
-        // },
+        props: ['pageType', 'showMenu'],
         components: {
-            'nv-menu': require('./menu.vue')
+            menuComponent
         }
     }
 </script>

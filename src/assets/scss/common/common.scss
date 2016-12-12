@@ -12,13 +12,13 @@ $color80:#80bd01;
 $gap:5px;
 
 body {
+    overflow-x: hidden;
     height: 100%;
     width: 100%;
     font-size: 14px;
     color: #313131;
-    overflow-x: hidden;
     line-height: 1;
-    background:url('../images/loading.gif') no-repeat center 250px;
+    // background:url('../images/loading.gif') no-repeat center 250px;
 }
 
 .mt5 {

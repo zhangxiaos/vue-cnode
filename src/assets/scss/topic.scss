@@ -2,16 +2,16 @@
     padding: $gap;
     margin:$padding;
     font-size: 18px;
-    color: $title;
     line-height: 1.5;
-    background-color:$colorf0;
+    color: $title;
     border-radius:$gap;
+    background-color:$colorf0;
 }
 
 .author-info {
     @extend .display-flex;
-    align-items: center;
     padding: 0 $padding;
+    align-items: center;
     color: $text;
     font-size: 12px;
     .col {
@@ -19,9 +19,9 @@
     }
     .avatar {
         display: block;
+        margin-right: $padding;
         width: 40px;
         height: 40px;
-        margin-right: $padding;
         border-radius: 50%;
     }
     span, time {
@@ -51,8 +51,8 @@
 .topic-content {
     padding: $padding;
     margin-top: $padding;
-    background: #ffffff;
     border-bottom: solid 1px $colord4;
+    background: #fff;
     .from{
         color:$red;
     }
@@ -67,18 +67,18 @@
 }
 .reply_num {
     margin-top: $gap*4;
-    background-color: $colore7;
     padding: $gap*2 0 $gap*2 $gap*2;
     border-top: solid 1px $colord4;
     border-bottom: solid 1px $colord4;
+    background-color: $colore7;
 }
 .reply-list {
-    width: 100%;
     margin-top: $gap*3;
+    width: 100%;
     ul {
+        padding-left: 0;
         width: 100%;
         list-style: none;
-        padding-left: 0;
         li {
             width: 100%;
             list-style: none;
@@ -90,8 +90,8 @@
                 color:$red;
             }
             .language-javascript{
-                background-color:$colorf0;
                 overflow-x:auto;
+                background-color:$colorf0;
             }
         }
     }
@@ -103,26 +103,25 @@
     textarea {
         display: block;
         -webkit-box-flex: 1;
+        padding: $padding;
         width: 100%;
+        font-size: 14px;
+        color: #313131;
         border: $border;
         background-color: #fff;
-        font-size: 14px;
-        padding: $padding;
-        color: #313131;
     }
     .button {
         display: inline-block;
+        margin: $padding auto;
         width: 100%;
         height: 42px;
-        margin: $padding 0;
-        line-height: 42px;
-        color: #fff;
         font-size: 16px;
-        background-color: #4fc08d;
-        border: none;
-        border-bottom: 2px solid #3aa373;
+        line-height: 42px;
         text-align: center;
-        vertical-align: middle;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        background-color: #4fc08d;
     }
 }
 

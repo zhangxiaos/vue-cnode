@@ -1,13 +1,13 @@
 <template>
     <nv-head page-type="消息" fix-head="true" :show-menu.sync="showMenu"
-            :message-count="message.hasnot_read_messages.length" :need-add="true" ></nv-head>
+            :message-count="" :need-add="true" ></nv-head>
+
     <div class="page" >
         <ul class="tabs">
-            <li class="item br" :class='{"selected":selectItem === 2}' @click="changeItem(2)">已读消息</li>
-            <li class="item" :class='{"selected":selectItem === 1}' @click="changeItem(1)">
+            <li class="item br" :class='{"selected":selectItem === 2}' @click="changeTab(2)">已读消息</li>
+            <li class="item" :class='{"selected":selectItem === 1}' @click="changeTab(1)">
                 未读消息
-                <i class="iconfont read" v-show="message.hasnot_read_messages.length > 0"
-                    @click="markall">&#xe60c;</i>
+                <i class="iconfont read" @click="markall" style="color: #b58d4b">&#xe60c;</i>
             </li>
         </ul>
         <div class="message markdown-body" v-for="item in currentData">
@@ -30,63 +30,58 @@
             </div>
         </div>
         <div class="no-data" v-show="noData">
-            <i class="iconfont icon-empty">&#xe60a;</i>
             暂无数据!
         </div>
     </div>
 </template>
 <script>
     export default {
-        data (){
+        components:{
+            "nvHead":require('../components/header.vue')
+        },
+        data () {
             return {
                 showMenu: false,
-                selectItem:2,
-                token:localStorage.token || '',
-                message:{},
-                noData:false,
-                currentData:[]
+                selectItem: 2,
+                message: {},
+                noData: false,
+                currentData: []
             }
         },
         route:{
-            data (transition){
-                let _self = this;
-                $.get('https://cnodejs.org/api/v1/messages?accesstoken='+_self.token,function(d){
-                    if(d && d.data){
-                        _self.message = d.data;
-                        if(d.data.hasnot_read_messages.length > 0){
-                            _self.currentData = d.data.hasnot_read_messages;
-                        }
-                        else{
-                            _self.currentData = d.data.has_read_messages;
-                            _self.selectItem = 2;
-                        }
-                        _self.noData = _self.currentData.length === 0 ? true : false;
+            data (transition) {
+                this.$http.get(`messages/?accesstoken=${localStorage.token}`).then(res => {
+
+                    this.message = res.data.data;
+                    
+                    if (this.message.hasnot_read_messages.length > 0) {
+                        this.$set('currentData', this.message.hasnot_read_messages);
                     }
-                    else{
-                        _self.noData = true;
+                    else {
+                        this.$set('currentData', this.message.has_read_messages);
+                        this.selectItem = 2;
                     }
+
+                    this.noData = this.currentData.length === 0 ? true : false;
                 });
             }
         },
         methods:{
-            //切换tab
-            changeItem (idx){
+            changeTab (idx){
                 this.selectItem = idx;
-                this.currentData = idx ===1?this.message.hasnot_read_messages:this.message.has_read_messages;
+                this.currentData = idx ===1 ? this.message.hasnot_read_messages : this.message.has_read_messages;
                 this.noData = this.currentData.length === 0 ? true : false;
             },
-            //标记所有为已读
             markall (){
-                $.post('https://cnodejs.org/api/v1/message/mark_all',{accesstoken:localStorage.token},
-                    function(d){
-                    if(d && d.success){
+                console.log(1)
+                this.$http.post('message/mark_all', {
+                    accesstoken: localStorage.token
+                }).then(res => {
+                    if (res.success) {
                         window.location.reload();
                     }
-                })
+                });
             }
-        },
-        components:{
-            "nvHead":require('../components/header.vue')
         }
     }
 </script>
