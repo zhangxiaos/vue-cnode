@@ -49,6 +49,7 @@
             return {
                 showMenu: true,
                 scroll: true,
+                showLD: true,
                 topics: [],
                 params: {
                     page: 1,
@@ -60,12 +61,13 @@
         },
         route: {
             data (transition) {
-                let tab   = transition.to.query || 'all';
+                let tab = transition.to.query.tab || 'all';
 
                 if (sessionStorage.params && transition.from.name === "topic" && sessionStorage.tab == tab) {
                     this.topics = JSON.parse(sessionStorage.topics);
                     this.params = JSON.parse(sessionStorage.params);
                     this.$nextTick(() => $(window).scrollTop(sessionStorage.scrollTop));
+                    this.showLD = false;
                 }
                 else {
                     this.params.tab = tab;
@@ -98,7 +100,7 @@
             }
         },
         methods:{
-            getTopics () {                
+            getTopics () { 
                 this.$http.get('topics', {params: this.params}).then(res => {
                     this.scroll = true;
                     this.showLD = false;

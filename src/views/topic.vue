@@ -85,6 +85,7 @@
                 topic: {},           
                 topicId: '',
                 curReplyId: '',
+                showLD: true,
                 userId: localStorage.userId || '',
                 alert: {
                     txt: '',

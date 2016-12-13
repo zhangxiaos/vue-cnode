@@ -7,17 +7,11 @@ import filters from './filters'
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
-// 实例化Vue的filter
 Object.keys(filters).forEach(k => Vue.filter(k, filters[k]))
 
 Vue.mixin({
 	http: {
 		root: 'https://cnodejs.org/api/v1'
-	},
-	data () {
-		return {
-			showLD: true
-		}
 	}
 })
 
