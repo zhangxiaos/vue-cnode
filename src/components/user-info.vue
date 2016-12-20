@@ -5,31 +5,33 @@
             <li class="login" @click="goEnter"><i class="iconfont icon-peoplefill"></i><a>登录</a></li>
         </ul>
         <!-- 已登录 -->
-        <div class="login-yes" v-if="loginname" @click="goUser">
-            <div class="avertar"><img v-if="avatar_url" :src="avatar_url"></div>
+        <div class="login-yes" v-if="loginname">
+
+            <router-link  class="avertar"
+                tag="div"
+                :to="{path: 'user', params: {loginname: loginname}}">
+                <img v-if="avatar_url" :src="avatar_url"></router-link>
+
             <div class="info">
                 <p v-if="loginname">{{ loginname }}</p>
             </div>
+            <router-link to="/login" class="iconfont icon-pullright"></router-link>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        replace: true,
         data () {
             return {
                 loginname: localStorage.loginname || "",
                 avatar_url: localStorage.avatar_url || ""
             }
         },
-        methods:{
-            goEnter (){
-                var link = '/login?redirect='+ encodeURIComponent(this.$route.path);
-                this.$route.router.go(link);
-            },
-            goUser (){
-                this.$route.router.go({name:'user',params:{loginname:localStorage.loginname}});
+        methods: {
+            goEnter () {
+                var url = '/login?redirect=' + encodeURIComponent(this.$route.path);
+                this.$route.router.push(url);
             }
         }
     }

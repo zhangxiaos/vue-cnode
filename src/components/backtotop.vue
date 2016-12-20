@@ -11,9 +11,11 @@
                 show: false,
             }
         },
-        ready () {
-            $(window).on('scroll', () => {
-                this.show = $(window).scrollTop() > 100 ? true : false; 
+        mounted () {
+            this.$nextTick(() => {
+                $(window).on('scroll', () => {
+                    this.show = $(window).scrollTop() > 100 ? true : false; 
+                });
             });
         },
         beforeDestory () {

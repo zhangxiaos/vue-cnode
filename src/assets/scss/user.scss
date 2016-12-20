@@ -11,9 +11,9 @@
     overflow: hidden;
     margin: 8px 9px;
     &>li {
+        position: relative;
         height: 22px;
         line-height: 22px;
-        position: relative;
     }
     .login i {
         margin-right: 27px;
@@ -22,29 +22,32 @@
 
 /*已登录*/
 .login-yes {
-    height: 100%;
-    background: url("../images/go_next_icon.png") no-repeat right center;
-    background-size: 6px 10px;
-    overflow: hidden;
     position: relative;
+    overflow: hidden;
+    height: 100%;
     .avertar {
-        width: 40px;
-        height: 40px;
-        background: url("../images/user.png") no-repeat center center;
-        background-size: 40px 40px;
-        border-radius: 20px;
         overflow: hidden;
         float: left;
+        width: 40px;
+        height: 40px;
+        // background: url("../images/user.png") no-repeat center center;
+        // background-size: 40px 40px;
+        border-radius: 20px;
         &>img {
+            display: block;
             width: 40px;
             height: 40px;
-            display: block;
         }
     }
     .info {
         margin-left: 10px;
         overflow: hidden;
         float: left;
+    }
+    .icon-pullright {
+        float: left;
+        height: 40px;
+        line-height: 40px;
     }
     p {
         width: 85px;
@@ -60,8 +63,8 @@
     }
     &:after {
         display: block;
-        background: url("../images/go_icon.png") no-repeat center right;
-        background-size: 7px 7px;
+        // background: url("../images/go_icon.png") no-repeat center right;
+        // background-size: 7px 7px;
     }
 }
 

@@ -19,11 +19,11 @@
     right: 0;
     z-index: 9999;
     text-align: center;
-    background-color: #000;
+    background-color: rgba(0, 0, 0, .5);
 }
 .wx_loading .wx_alert_inner {
     display: inline-block;
-    margin: 50% auto 0;
+    margin: 80% auto 0;
     padding: 20px 25px;
     text-align: center;
     color: #fff;

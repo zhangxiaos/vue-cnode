@@ -1,26 +1,26 @@
 <template>
-	<div>
-		<img class="home-logo" src="../assets/images/index.png">
+	<div class="home-logo">
+		<img src="../assets/images/logo.png">
 	</div>
 </template>
 
 <script>
-	import 'assets/scss/CV.scss'
-    import 'assets/scss/github-markdown.css'
-
-    export default {
-    	ready () {
-    		setTimeout(() => {
-    			this.$route.router.go({path: '/list'});
-    		}, 2000);
-    	}
-    }
+	export default {
+		mounted () {
+            this.$nextTick(() => {
+            	window.setTimeout(() => {
+            		this.$router.push('/list');
+            	}, 1000);
+            });
+        }
+	}
 </script>
 
 <style>
 	.home-logo {
-        margin-top: 40%;
-        width: 100%;
-        background-color: #fff;
+        text-align: center;
+    }
+    .home-logo img {
+        margin-top: 50%;
     }
 </style>

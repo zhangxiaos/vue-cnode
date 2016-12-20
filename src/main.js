@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import FastClick from 'fastclick'
 import filters from './filters'
+import 'assets/scss/CV.scss'
+import 'assets/scss/github-markdown.css'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
@@ -15,64 +17,59 @@ Vue.mixin({
 	}
 })
 
-// Vue.http.interceptors.push((request, next) => {
-//     next((response) => {        
-//     	if (response.statusText === 'OK') {
-//     	}
-//     	return response;
-//     })
-// })
+// const Home = resolve => require(['./views/index'], resolve)
+// const List = resolve => require(['./views/list'], resolve)
+// const Topic = resolve => require(['./views/topic'], resolve)
+// const New = resolve => require(['./views/new'], resolve)
+// const About = resolve => require(['./views/about'], resolve)
+// const Message = resolve => require(['./views/message'], resolve)
+// const Login = resolve => require(['./views/login'], resolve)
+// const User = resolve => require(['./views/user'], resolve)
 
-let router = new VueRouter()
+import Home from './views/index'
+import List from './views/list'
+import Topic from './views/topic'
+import New from './views/new'
+import About from './views/about'
+import Message from './views/message'
+import Login from './views/login'
+import User from './views/user'
 
-let app = Vue.extend({})
+const scrollBehavior = (to, from, savedPosition) => {
+	if (savedPosition) {
+		return savedPosition;
+	} else {
+		const position = {};
 
-import Home from './views/index.vue'
-import List from './views/list.vue'
-import Topic from './views/topic.vue'
-import New from './views/new.vue'
-import About from './views/about.vue'
-import Message from './views/message.vue'
-import Login from './views/login.vue'
-import User from './views/user.vue'
+		if (to.hash) {
+			position.selector = to.hash;
+		}
 
-router.map({
-	'*': {
-		component: Home
-	},
-	'/': {
-		name: 'home',
-		component: Home
-	},
-	'/list': {
-		name: 'list',
-		component: List
-	},
-	'/topic/:id': {
-		name: 'topic',
-		component: Topic
-	},
-	'/add': {
-		name: 'add',
-		component: New
-	},
-	'/about': {
-		name: 'about',
-		component: About
-	},
-	'/message': {
-		name: 'message',
-		component: Message
-	},
-	'/login': {
-		name: 'login',
-		component: Login
-	},
-	'/user/:loginname': {
-		name: 'user',
-		component: User
+		if (to.matched.some(m => m.meta.scrollToTop)) {
+			position.x = 0;
+			position.y = 0;
+		}
+
+		return position;
 	}
+}
+
+const router = new VueRouter({
+	mode: 'history',
+	scrollBehavior,
+	routes: [
+		{ path: '/', component: Home, redirect: '/list' },
+		{ path: '/list', component: List },
+		{ path: '/topic/:id', name: 'topic', component: Topic },
+		{ path: '/add', component: New },
+		{ path: '/about', component: About },
+		{ path: '/message', component: Message },
+		{ path: '/login', component: Login },
+		{ path: '/user/:loginname', component: User },
+		{ path: '*', component: Home}
+	]
 })
 
-router.start(app, '#app')
-
+const app = new Vue({
+    router
+}).$mount('#app')

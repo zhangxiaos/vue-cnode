@@ -1,41 +1,52 @@
 <template>
-    <nv-head page-type="用户信息" :show-menu="false"></nv-head>
+    <div>
+        <nv-head page-type="用户信息" :show-menu="showMenu"></nv-head>
 
-    <section class="userinfo">
-        <img class="u-img" :src="user.avatar_url" /><br/>
-        <span class="u-name" v-text="user.loginname"></span>
-        <div class="u-bottom">
-            <span class="u-time" v-text="user.create_at | getLastTimeStr false"></span>
-            <span class="u-score">积分：{{user.score}}</span>
-        </div>
-    </section>
-    <section class="topics">
-        <ul class="user-tabs">
-            <li class="item br" :class='{"selected":selectItem === 1}' @click="changeTab(1)">最近回复</li>
-            <li class="item" :class='{"selected":selectItem === 2}' @click="changeTab(2)">最新发布</li>
-        </ul>
-        <div class="message markdown-body" v-for="item in currentData">
-            <section class="user">
-                <img class="head" :src="item.author.avatar_url"
-                    v-link="{name:'user',params:{loginname:item.author.loginname}}" />
-                <div class="info" v-link="{name:'topic',params:{id:item.id}}">
-                    <div class="t-title">{{item.title}}</div>
-                    <span class="cl">
-                        <span class="name">{{item.author.loginname}}</span>
-                    </span>
-                    <span class="cr">
-                        <span class="name">{{item.last_reply_at | getLastTimeStr true}}</span>
-                    </span>
-                </div>
-            </section>
-        </div>
-        <div class="no-data" v-show="currentData.length === 0">
-            暂无数据!
-        </div>
-    </section>
+        <section class="userinfo">
+            <img class="u-img" :src="user.avatar_url" /><br/>
+            <span class="u-name" v-text="user.loginname"></span>
+            <div class="u-bottom">
+                <span class="u-time" v-text="getTime(user.create_at, false)"></span>
+                <span class="u-score">积分：{{ user.score }}</span>
+            </div>
+        </section>
+        <section class="topics">
+            <ul class="user-tabs">
+                <li class="item br" :class="{'selected': selectItem === 1}" @click="changeTab(1)">最近回复</li>
+                <li class="item" :class="{'selected': selectItem === 2}" @click="changeTab(2)">最新发布</li>
+            </ul>
+            <div class="message markdown-body" v-for="item in currentData">
+                <section class="user">
+                    <router-link class="head" 
+                        :src="item.author.avatar_url" 
+                        tag="img"
+                        :to="{ path:'/user',params: {loginname: item.author.loginname} }"></router-link>
+
+                    <router-link class="info"
+                        tag="div" 
+                        :to="{ path:'topic', params: {id:item.id} }">
+                        
+                        <div class="t-title">{{ item.title }}</div>
+                        <span class="cl">
+                            <span class="name">{{ item.author.loginname }}</span>
+                        </span>
+                        <span class="cr">
+                            <span class="name">{{ item.last_reply_at | getLastTimeStr(true) }}</span>
+                        </span>
+                    </router-link>
+                </section>
+            </div>
+            <div class="no-data" v-show="currentData.length === 0">
+                暂无数据!
+            </div>
+        </section>
+    </div>
 </template>
 
 <script>
+    import utils from  '../libs/utils'
+    import bus from '../libs/bus'
+
     export default  {
         components: {
             'nvHead': require('../components/header.vue')
@@ -44,8 +55,17 @@
             return {
                 user: {},
                 currentData: [],
-                selectItem: 1
+                selectItem: 1,
+                showMenu: false
             }
+        },
+        created () {
+            bus.$on('open-menu', this.openMenu);
+            bus.$on('hide-menu', this.hideMenu);
+        },
+        beforeDestroy () {
+            bus.$off('open-menu', this.openMenu);
+            bus.$off('hide-menu', this.hideMenu);
         },
         route: {
             data (transition){
@@ -66,9 +86,22 @@
             }
         },
         methods: {
+            openMenu () {
+                this.showMenu = true;
+            },
+            hideMenu () {
+                this.showMenu = false;
+            },
             changeTab (idx) {
                 this.selectItem = idx;
                 this.currentData = idx ===1 ? this.user.recent_replies : this.user.recent_topics;
+            },
+            getTime (time, friendly) {
+               if (friendly) {
+                    return utils.MillisecondToDate(new Date() - new Date(time));
+                } else {
+                    return utils.fmtDate(new Date(time),'yyyy-MM-dd hh:mm');
+                } 
             }
         }
     }

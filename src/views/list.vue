@@ -1,43 +1,48 @@
 <template>
-    <header-component :page-type="params.tab | getTitleStr"
-        :show-menu.sync="showMenu"></header-component>
-    
-    <section id="page">
-        <ul class="posts-list">
-            <li v-for="item in topics"
-                v-link="{path: '/topic/' + item.id}">
+    <div>
+        <header-component :page-type="getTitleStr(params.tab)"
+            :show-menu="showMenu"></header-component>
+        
+        <section id="page" ref="page">
+            <ul class="posts-list">
+                <router-link 
+                    tag="li"
+                    v-for="item in topics"
+                    :to="'/topic/' + item.id">
 
-                <h3 v-text="item.title"
-                    :class="item.tab | getTabClassName item.good item.top"
-                    :title="item.tab | getTabStr item.good item.top"></h3>
+                    <h3 v-text="item.title"
+                        :class="getTabClassName(item.tab, item.good, item.top)"
+                        :title="getTabStr(item.tab, item.good, item.top)"></h3>
 
-                <div class="content">
-                    <img class="avatar" :src="item.author.avatar_url" />
-                    <div class="info">
-                        <p>
-                            <span class="name">{{ item.author.loginname }}</span>
-                            <span class="status" v-if="item.reply_count > 0">
-                                <b>{{ item.reply_count }}</b> / {{ item.visit_count }}
-                            </span>
-                        </p>
-                        <p>
-                            <time>{{ item.create_at | getLastTimeStr true }}</time>
-                            <time>{{ item.last_reply_at | getLastTimeStr true }}</time>
-                        </p>
+                    <div class="content">
+                        <img class="avatar" :src="item.author.avatar_url" />
+                        <div class="info">
+                            <p>
+                                <span class="name">{{ item.author.loginname }}</span>
+                                <span class="status" v-if="item.reply_count > 0">
+                                    <b>{{ item.reply_count }}</b> / {{ item.visit_count }}
+                                </span>
+                            </p>
+                            <p>
+                                <time>{{ item.create_at | getLastTimeStr(true) }}</time>
+                                <time>{{ item.last_reply_at | getLastTimeStr(true) }}</time>
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </li>
-        </ul>
-    </section>
+                </router-link>
+            </ul>
+        </section>
 
-    <go-back-component></go-back-component>
-    <loading :show-loading="showLD"></loading>
+        <go-back-component></go-back-component>
+        <loading :show-loading="showLD"></loading>
+    </div>
 </template>
 
 <script>
     import headerComponent from 'components/header'
     import goBackComponent from 'components/backtotop'
     import loading from 'components/loading'
+    import bus from '../libs/bus'
 
     export default {
         components: {
@@ -47,7 +52,7 @@
         },
         data () {
             return {
-                showMenu: true,
+                showMenu: false,
                 scroll: true,
                 showLD: true,
                 topics: [],
@@ -59,53 +64,58 @@
                 }
             }
         },
-        route: {
-            data (transition) {
-                let tab = transition.to.query.tab || 'all';
+        watch: {
+            '$route': 'getTopics'
+          },
+        created () {
+            bus.$on('hide-menu-header', this.hideMenu);
+            bus.$on('open-menu-header', this.openMenu);
 
-                if (sessionStorage.params && transition.from.name === "topic" && sessionStorage.tab == tab) {
-                    this.topics = JSON.parse(sessionStorage.topics);
-                    this.params = JSON.parse(sessionStorage.params);
-                    this.$nextTick(() => $(window).scrollTop(sessionStorage.scrollTop));
-                    this.showLD = false;
-                }
-                else {
-                    this.params.tab = tab;
-                    this.getTopics();
-                }
-
-                this.showMenu = false;
-
+            if (sessionStorage.topics && sessionStorage.params) {
+                this.topics = JSON.parse(sessionStorage.topics);
+                this.params = JSON.parse(sessionStorage.params);
+                this.showLD = false;
+            }
+            else {
+                this.getTopics();
+            }
+        },
+        mounted () {
+            this.$nextTick(() => {
                 $(window).on('scroll', () => {
                     this.getScrollData();
                 });
+            });
+        },
+        beforeDestroy () {
+            bus.$off('hide-menu-header', this.hideMenu);
+            bus.$off('open-menu-header', this.openMenu);
+            $('window').off('scroll');
+        },
+        beforeRouteLeave (to, from, next) {
+            sessionStorage.removeItem('topics');
+            sessionStorage.removeItem('params');
 
-            },
-            deactivate (transition) {
-                $(window).off('scroll');
-
-                if (transition.to.name === 'topic') {
-                    sessionStorage.scrollTop = $(window).scrollTop();
-                    sessionStorage.topics = JSON.stringify(this.topics);
-                    sessionStorage.params = JSON.stringify(this.params);
-                    sessionStorage.tab = transition.from.query.tab || 'all';
-                }
-                else {
-                    sessionStorage.removeItem('topics');
-                    sessionStorage.removeItem('params');
-                    sessionStorage.removeItem('tab');
-                }
-
-                transition.next();
+            if (to.name === 'topic') {
+                sessionStorage.topics = JSON.stringify(this.topics);
+                sessionStorage.params = JSON.stringify(this.params);
+                next();
             }
         },
-        methods:{
+        methods: {
+            openMenu () {
+                this.showMenu = true;
+            },
+            hideMenu () {
+                this.showMenu = false;
+            },
             getTopics () { 
+                this.params.tab = this.$route.query.tab || 'all';
+                
                 this.$http.get('topics', {params: this.params}).then(res => {
                     this.scroll = true;
                     this.showLD = false;
-                    
-                    this.$set('topics', res.data.data);
+                    this.topics = res.data.data;
                 });
             },
             getScrollData () {
@@ -118,6 +128,76 @@
                         this.getTopics();
                     }
                 }
+            },
+            getTitleStr (tab) {
+                let str = '';
+                switch (tab) {
+                    case 'share':
+                        str = '分享';
+                        break;
+                    case 'ask':
+                        str = '问答';
+                        break;
+                    case 'job':
+                        str = '招聘';
+                        break;
+                    case 'good':
+                        str = '精华';
+                        break;
+                    default:
+                        str = '全部';
+                        break;
+                }
+                return str;
+            },
+            getTabClassName (tab, good, top) {
+                let className = '';
+
+                if (top) {
+                    className = 'top';
+                } else if (good) {
+                    className = 'good';
+                } else {
+                    switch (tab) {
+                        case 'share':
+                            className = 'share';
+                            break;
+                        case 'ask':
+                            className = 'ask';
+                            break;
+                        case 'job':
+                            className = 'job';
+                            break;
+                        default:
+                            className = 'default';
+                            break;
+                    }
+                }
+                return className;
+            },
+            getTabStr (tab, good, top) {
+                let str = '';
+                if (top) {
+                    str = '置顶';
+                } else if (good) {
+                    str = '精华';
+                } else {
+                    switch (tab) {
+                        case 'share':
+                            str = '分享';
+                            break;
+                        case 'ask':
+                            str = '问答';
+                            break;
+                        case 'job':
+                            str = '招聘';
+                            break;
+                        default:
+                            str = '暂无';
+                            break;
+                    }
+                }
+                return str;
             }
         }
     }

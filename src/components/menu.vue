@@ -1,29 +1,30 @@
 <template>
-    <section id="sideBar" class="nav-list" :class="{'show':showMenu}">
+    <section id="sideBar" class="nav-list" :class="{'show': showMenu}">
         <user-info></user-info>
         <ul class="list-ul" @click="hideMenu">
-            <li class="icon-all iconfont" v-link="{'name':'list',query:{tab:'all'}}">全部</li>
-            <li class="icon-good iconfont" v-link="{name:'list',query:{tab:'good'}}">精华</li>
-            <li class="icon-share iconfont" v-link="{name:'list',query:{tab:'share'}}">分享</li>
-            <li class="icon-ask iconfont" v-link="{name:'list',query:{tab:'ask'}}">问答</li>
-            <li class="icon-job iconfont" v-link="{name:'list',query:{tab:'job'}}">招聘</li>
-            <li class="icon-message iconfont line" v-link="{name:'message'}" class="line">消息</li>
-            <li class="icon-about iconfont" v-link="{name:'about'}">关于</li>
+            <router-link class="icon-all iconfont" tag="li" to="list?tab=all">全部</router-link>
+            <router-link class="icon-good iconfont" tag="li" to="list?tab=good">精华</router-link>
+            <router-link class="icon-share iconfont" tag="li" to="list?tab=share">分享</router-link>
+            <router-link class="icon-ask iconfont" tag="li" to="list?tab=ask">问答</router-link>
+            <router-link class="icon-job iconfont" tag="li" to="list?tab=job">招聘</router-link>
+            <router-link class="icon-message iconfont line" tag="li" to="message">消息</router-link>
+            <router-link class="icon-about iconfont" tag="li" to="about">关于</router-link>
         </ul>
     </section>
 </template>
 
 <script>
+    import bus from '../libs/bus'
+
     export default {
         props: ['showMenu'],
-        methods: {
-            hideMenu () {
-                // this.$dispatch('close-menu');
-                this.showMenu = false;
-            }
-        },
         components: {
             'userInfo': require('./user-info.vue')
+        },
+        methods: {
+            hideMenu () {
+                bus.$emit('hide-menu-header');
+            }
         }
     }
 </script>
@@ -44,7 +45,7 @@
         color: #42b983;
         font-weight: bold;
     }
-    .nav-list.show{
+    .nav-list.show {
         transform: translateX(200px);
     }
     .list-ul {
@@ -57,11 +58,11 @@
         text-indent: 1px;
         color: #7f8c8d;
     }
-    .list-ul li:before{
+    .list-ul li:before {
         margin-right: 25px;
         color: #2c3e50;
     }
-    .list-ul .line{
+    .list-ul .line {
         border-top: 1px solid #584848;
     }
 </style>
