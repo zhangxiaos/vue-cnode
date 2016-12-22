@@ -5,7 +5,7 @@
         <div id="page" v-if="topic.title">
             <h2 class="topic-title">{{ topic.title }}</h2>
             <section class="author-info">
-                <img class="avatar" :src="topic.author.avatar_url" >
+                <router-link class="avatar" :src="topic.author.avatar_url" tag="img" :to="'/user/' + topic.author.loginname"></router-link>
                 <div class="col">
                     <span>{{ topic.author.loginname }}</span>
                     <time>
@@ -15,7 +15,8 @@
                 <div>
                     <span class="tag"
                           :class="getTabClassName(topic.tab, topic.good, topic.top)">
-                            {{ topic.tab | getTabStr(topic.good, topic.top) }}</span>
+                          {{ topic.tab | getTabStr(topic.good, topic.top) }}</span>
+
                     <span class="name">{{ topic.visit_count }}次浏览</span>
                 </div>
             </section>
@@ -34,7 +35,7 @@
                             <router-link class="head" 
                                  :src="item.author.avatar_url"
                                  tag="img"
-                                 to="{ path: 'user', params: {loginname:item.author.loginname}}"></router-link> 
+                                 :to="'/user/' + item.author.loginname"></router-link> 
 
                             <div class="info">
                                 <span class="cl">

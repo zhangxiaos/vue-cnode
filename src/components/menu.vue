@@ -2,13 +2,13 @@
     <section id="sideBar" class="nav-list" :class="{'show': showMenu}">
         <user-info></user-info>
         <ul class="list-ul" @click="hideMenu">
-            <router-link class="icon-all iconfont" tag="li" to="list?tab=all">全部</router-link>
-            <router-link class="icon-good iconfont" tag="li" to="list?tab=good">精华</router-link>
-            <router-link class="icon-share iconfont" tag="li" to="list?tab=share">分享</router-link>
-            <router-link class="icon-ask iconfont" tag="li" to="list?tab=ask">问答</router-link>
-            <router-link class="icon-job iconfont" tag="li" to="list?tab=job">招聘</router-link>
-            <router-link class="icon-message iconfont line" tag="li" to="message">消息</router-link>
-            <router-link class="icon-about iconfont" tag="li" to="about">关于</router-link>
+            <router-link class="icon-all iconfont" tag="li" to="/list?tab=all">全部</router-link>
+            <router-link class="icon-good iconfont" tag="li" to="/list?tab=good">精华</router-link>
+            <router-link class="icon-share iconfont" tag="li" to="/list?tab=share">分享</router-link>
+            <router-link class="icon-ask iconfont" tag="li" to="/list?tab=ask">问答</router-link>
+            <router-link class="icon-job iconfont" tag="li" to="/list?tab=job">招聘</router-link>
+            <router-link class="icon-message iconfont line" tag="li" to="/message">消息</router-link>
+            <router-link class="icon-about iconfont" tag="li" to="/about">关于</router-link>
         </ul>
     </section>
 </template>

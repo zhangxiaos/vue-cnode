@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nv-head page-type="登录"></nv-head>
+        <nv-head page-type="登录" :show-menu="showMenu"></nv-head>
         <section class="page-body">
             <div class="label">
                 <input class="txt" type="text" placeholder="Access Token" v-model="token" maxlength="36">
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+    import bus from '../libs/bus'
+    
     export default {
         components: {
             'nvHead': require('components/header.vue'),
@@ -23,6 +25,7 @@
             let self = this;
             return {
                 token: '',
+                showMenu: false,
                 alert: {
                     txt: '',
                     show: false,
@@ -35,6 +38,14 @@
                     }
                 }
             }
+        },
+        created () {
+            bus.$on('open-menu-header', this.openMenu);
+            bus.$on('hide-menu-header', this.hideMenu);
+        },
+        beforeDestroy () {
+            bus.$off('open-menu-header', this.openMenu);
+            bus.$off('hide-menu-header', this.hideMenu);
         },
         methods: {
             login () {
@@ -67,6 +78,12 @@
                     this.alert.hideFn();
                     return false;
                 });
+            },
+            openMenu () {
+                this.showMenu = true;
+            },
+            hideMenu () {
+                this.showMenu = false;
             }
         }
     }

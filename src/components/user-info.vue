@@ -2,15 +2,14 @@
     <div class="user-info">
         <!-- 未登录 -->
         <ul class="login-no" v-if="!loginname">
-            <li class="login" @click="goEnter"><i class="iconfont icon-peoplefill"></i><a>登录</a></li>
+            <li class="login" @click="goLogin"><i class="iconfont icon-peoplefill"></i><a>登录</a></li>
         </ul>
         <!-- 已登录 -->
         <div class="login-yes" v-if="loginname">
 
-            <router-link  class="avertar"
-                tag="div"
-                :to="{path: 'user', params: {loginname: loginname}}">
-                <img v-if="avatar_url" :src="avatar_url"></router-link>
+            <div  class="avertar">
+                <router-link v-if="avatar_url" :src="avatar_url" tag="img" :to="'/user/' + loginname"></router-link>
+            </div>
 
             <div class="info">
                 <p v-if="loginname">{{ loginname }}</p>
@@ -29,9 +28,9 @@
             }
         },
         methods: {
-            goEnter () {
+            goLogin () {
                 var url = '/login?redirect=' + encodeURIComponent(this.$route.path);
-                this.$route.router.push(url);
+                this.$router.push(url);
             }
         }
     }

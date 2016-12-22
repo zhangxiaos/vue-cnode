@@ -17,23 +17,14 @@ Vue.mixin({
 	}
 })
 
-// const Home = resolve => require(['./views/index'], resolve)
-// const List = resolve => require(['./views/list'], resolve)
-// const Topic = resolve => require(['./views/topic'], resolve)
-// const New = resolve => require(['./views/new'], resolve)
-// const About = resolve => require(['./views/about'], resolve)
-// const Message = resolve => require(['./views/message'], resolve)
-// const Login = resolve => require(['./views/login'], resolve)
-// const User = resolve => require(['./views/user'], resolve)
-
-import Home from './views/index'
-import List from './views/list'
-import Topic from './views/topic'
-import New from './views/new'
-import About from './views/about'
-import Message from './views/message'
-import Login from './views/login'
-import User from './views/user'
+const Home = resolve => require(['./views/index'], resolve)
+const List = resolve => require(['./views/list'], resolve)
+const Topic = resolve => require(['./views/topic'], resolve)
+const New = resolve => require(['./views/new'], resolve)
+const About = resolve => require(['./views/about'], resolve)
+const Message = resolve => require(['./views/message'], resolve)
+const Login = resolve => require(['./views/login'], resolve)
+const User = resolve => require(['./views/user'], resolve)
 
 const scrollBehavior = (to, from, savedPosition) => {
 	if (savedPosition) {

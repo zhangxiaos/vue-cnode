@@ -20,11 +20,11 @@
                     <router-link class="head" 
                         :src="item.author.avatar_url" 
                         tag="img"
-                        :to="{ path:'/user',params: {loginname: item.author.loginname} }"></router-link>
+                        :to="'/user/' + item.author.loginname"></router-link>
 
                     <router-link class="info"
                         tag="div" 
-                        :to="{ path:'topic', params: {id:item.id} }">
+                        :to="'/topic/' + item.id">
                         
                         <div class="t-title">{{ item.title }}</div>
                         <span class="cl">
@@ -40,6 +40,7 @@
                 暂无数据!
             </div>
         </section>
+        <loading :show-loading="showLD"></loading>
     </div>
 </template>
 
@@ -49,30 +50,34 @@
 
     export default  {
         components: {
-            'nvHead': require('../components/header.vue')
+            'nvHead': require('../components/header.vue'),
+            'loading': require('components/loading')
         },
         data () {
             return {
                 user: {},
                 currentData: [],
                 selectItem: 1,
-                showMenu: false
+                showMenu: false,
+                showLD: true
             }
         },
         created () {
-            bus.$on('open-menu', this.openMenu);
-            bus.$on('hide-menu', this.hideMenu);
+            bus.$on('open-menu-header', this.openMenu);
+            bus.$on('hide-menu-header', this.hideMenu);
+            this.getData();
         },
         beforeDestroy () {
-            bus.$off('open-menu', this.openMenu);
-            bus.$off('hide-menu', this.hideMenu);
+            bus.$off('open-menu-header', this.openMenu);
+            bus.$off('hide-menu-header', this.hideMenu);
         },
-        route: {
-            data (transition){
-                let loginname = transition.to.params.loginname;
+        methods: {
+            getData () {
+                let loginname = this.$route.params.loginname;
 
                 this.$http.get(`user/${loginname}`).then(res => {
                     let data = res.data.data;
+                    this.showLD = false;
                     this.user = data;
 
                     if(data.recent_replies.length > 0){
@@ -83,9 +88,7 @@
                         this.selectItem = 2;
                     }
                 });
-            }
-        },
-        methods: {
+            },
             openMenu () {
                 this.showMenu = true;
             },
@@ -111,5 +114,10 @@
     .no-data {
         margin-top: 30%;
         padding: 0;
+    }
+    .info {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>
